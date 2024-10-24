@@ -1,6 +1,4 @@
-﻿using TechnicoApplication.Models.PropertyOwner;
-
-namespace TechnicoApplication.Models.PropertyRepair;
+﻿namespace TechnicoApplication.Models;
 
 public class Repair{
     public enum RepairType{
@@ -17,9 +15,9 @@ public class Repair{
         Complete,
     }
 
-    private DateTime _scheduledRepairDate;
-    private string? _repairDescription;
-    private string? _repairAddress;
-    private RepairStatus _repairStatus;
-    private Owner? _repairOwner;
+    public DateTime ScheduledRepairDate {get; set;}
+    public string? RepairDescription { get; set; } = string.Empty;
+    public string? RepairAddress { get; set; } = string.Empty; 
+    public RepairStatus Status{get; set;}
+    public Owner? RepairOwner {get; set;}
 }
