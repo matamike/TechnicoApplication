@@ -7,8 +7,8 @@ public class Property{
         ApartmentBuilding,
     }
 
-    public string? PropertyID { get; set; } = string.Empty;
-    public string? PropertyAddress { get; set; } = string.Empty;
+    public string PropertyID { get; set; } = string.Empty;
+    public string PropertyAddress { get; set; } = string.Empty;
     public int PropertyConstructionYear { get; set; }
-    public string? OwnerVatNumber { get; set; } = string.Empty;
+    public string OwnerVatNumber { get; set; } = string.Empty;
 }
