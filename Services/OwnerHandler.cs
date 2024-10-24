@@ -99,7 +99,7 @@ public static class OwnerHandler{
     //Validation
     public static void OwnerFieldValidation(out bool result, out string message, Owner owner){
         result = true;
-        message = "Registration Successful";
+        message = "Owner Registration Successful";
 
         if(owner == null){
             message = "<<<Null Owner instance>>>";
@@ -123,6 +123,18 @@ public static class OwnerHandler{
         }
         if (owner.Password == string.Empty){
             message = "<<<Empty Password field>>>";
+            result = false;
+            return;
+        }
+        if (owner.VatNumber == null)
+        {
+            message = "<<<Null VatNumber field>>>";
+            result = false;
+            return;
+        }
+        if (owner.VatNumber == string.Empty)
+        {
+            message = "<<<Empty VatNumber field>>>";
             result = false;
             return;
         }
