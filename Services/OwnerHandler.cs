@@ -63,26 +63,12 @@ public static class OwnerHandler{
         Console.WriteLine(message);
     }
 
-    public static void CreateOwner(string email, string password, string name, string surname, string address, string vat, string phoneNumber, Owner.OwnerType type){
-        Owner newOwner = new Owner(){
-            Email = email,
-            Password = password,
-            Name = name,
-            Surname = surname,
-            Address = address,
-            VatNumber = vat,
-            PhoneNumber = phoneNumber,
-            OType = type
-        };
-        CreateOwner(newOwner);
-    }
-
-    public static void UpdateOwner(string username, ImmutableOwner refreshedOwnerData){
-        if (!OwnerExists(username)){
+    public static void UpdateOwner(Owner owner, ImmutableOwner refreshedOwnerData){
+        if (!OwnerExists(owner)){
             Console.WriteLine("No Owner found!");
             return;
         }
-        Owners[username] = new Owner(){
+        Owners[owner.Email] = new Owner(){
             Address = refreshedOwnerData.Address,
             Name = refreshedOwnerData.Name,
             Surname = refreshedOwnerData.Surname,
@@ -154,17 +140,6 @@ public static class OwnerHandler{
         return result;
     }
 
-    public static bool OwnerExists(string username)
-    {
-        bool result = false;
-        if(username != null)
-        {
-            if (Owners.ContainsKey(username)) result = true;
-        }
-        return result;
-    }
-    
-    //Data Retrieval
     public static string GetOwnerDisplayData(string email){
         if (Owners.ContainsKey(email)) {
             Owner currentOwner = Owners[email];
