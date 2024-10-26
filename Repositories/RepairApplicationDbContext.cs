@@ -17,9 +17,14 @@ public class RepairApplicationDbContext : DbContext{
     //Passing Parameters (extra) for properties(columns) of each of DbSet(tables to be) entities.
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //modelBuilder
-        //    .Entity<Customer>()
-        //    .HasIndex(p => p.Email)
-        //    .IsUnique();
+        modelBuilder
+            .Entity<Owner>()
+            .HasIndex(p => p.Email)
+            .IsUnique();
+
+        modelBuilder
+            .Entity<Owner>()
+            .HasIndex(p => p.VatNumber)
+            .IsUnique();
     }
 }
