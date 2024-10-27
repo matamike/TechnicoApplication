@@ -15,11 +15,28 @@ public class OwnerService{
             return;
         }
 
-        Owner? ownerQueryResult = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.VatNumber == owner.VatNumber);
-        if (ownerQueryResult != null){
-            Console.WriteLine($"Owner requested registration already exists");
+        Owner? ownerVatQueryResult = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.VatNumber == owner.VatNumber);
+        Owner? ownerEmailQueryResultt = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.Email == owner.Email);
+        if (ownerVatQueryResult != null){
+            Console.WriteLine($"Owner registration with the VatNumber provided already exists.");
             return;
         }
+
+        if (ownerEmailQueryResultt != null){
+            Console.WriteLine($"Owner registration with the Email provided already exists.");
+            return;
+        }
+
+        if (owner.Email == null || owner.Email == string.Empty){
+            Console.WriteLine($"Owner input email is null or empty");
+            return;
+        }
+
+        if (owner.VatNumber == null || owner.VatNumber == string.Empty){
+            Console.WriteLine($"Owner input VatNumber is null or empty");
+            return;
+        }
+
 
         //Register owner to the db.
         _repairApplicationDbContext.Owners.Add(owner);
@@ -28,14 +45,57 @@ public class OwnerService{
     }
 
     public void DisplayOwnerInfo(Owner owner){
-        //Display owner info (for now all) -> security later.
-        //Display owner Properties (if any)
-        //Display owner Properties repairs (if any) 
+        if (owner is null){
+            Console.WriteLine("owner argument is null.");
+            return;
+        }
+
+        Owner? ownerQueryResult = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.VatNumber == owner.VatNumber);
+        if (ownerQueryResult == null){
+            Console.WriteLine($"Owner requested display does not exist");
+            return;
+        }
+
+        //Display owner info (except password)
+        Console.WriteLine($" Name: {ownerQueryResult.Name} \n" +
+                          $" Surname: {ownerQueryResult.Surname} \n" +
+                          $" Email:{ownerQueryResult.Email} \n" +
+                          $" Address: {ownerQueryResult.Address} \n" +
+                          $" VAT: {ownerQueryResult.VatNumber} \n" +
+                          $" PhoneNumber: {ownerQueryResult.PhoneNumber} \n");
+
+        //Display owner Properties (if any) //TODO
+        //Display owner Properties repairs //TODO 
     }
 
 
-    public void UpdateOwnerInfo(Owner owner){ 
-        //Update owner's info to the db (some attributes are not allowed to change (such as email or VAT that are considered as unique.)
+    public void UpdateOwnerInfo(Owner owner){
+        if (owner is null){
+            Console.WriteLine("owner argument is null.");
+            return;
+        }
+
+        Owner? ownerQueryResult = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.VatNumber == owner.VatNumber);
+        if (ownerQueryResult == null){
+            Console.WriteLine($"Owner requested update changes does not exist");
+            return;
+        }
+
+        if (ownerQueryResult.VatNumber != owner.VatNumber){
+            Console.WriteLine($"Detected Change(VAT). Changing Owner's VAT is not allowed.");
+        }
+
+        if (ownerQueryResult.Email != owner.Email){
+            Console.WriteLine($"Detected Change(Email). Changing Owner's Email is not allowed.");
+        }
+
+        //Update owner's info to the db
+        ownerQueryResult.Name = owner.Name;
+        ownerQueryResult.Surname = owner.Surname;
+        ownerQueryResult.Address = owner.Address;
+        ownerQueryResult.PhoneNumber = owner.PhoneNumber;
+        _repairApplicationDbContext.SaveChanges();
+        Console.WriteLine("Changes Updated Successfully.");
     }
 
     public void DeleteOwner(Owner owner){

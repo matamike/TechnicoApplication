@@ -24,8 +24,15 @@ Owner owner = new Owner()
     PhoneNumber = "3016875",
 };
 
-//ownerService.RegisterOwner(owner);
-//ownerService.DeleteOwner(null);
+ownerService.RegisterOwner(owner);
+
+owner.Name = "Agent";
+owner.Surname = "47";
+owner.Email = "Agent.47@aol.com";
+ownerService.UpdateOwnerInfo(owner);
+
+ownerService.DisplayOwnerInfo(owner);
+//ownerService.DeleteOwner(owner);
 
 
 
