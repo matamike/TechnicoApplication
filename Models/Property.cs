@@ -4,7 +4,7 @@ namespace TechnicoApplication.Models;
 
 public class Property{
     [Key] public int Id { get; private set; }
-    public string PropertyID { get; set; } = string.Empty;
+    public string? PropertyID { get; set; } = null;
     public string PropertyAddress { get; set; } = string.Empty;
     public int PropertyConstructionYear { get; set; }
     public PropertyType PType { get; set; }

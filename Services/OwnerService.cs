@@ -5,9 +5,7 @@ namespace TechnicoApplication.Services;
 
 public class OwnerService{
     private RepairApplicationDbContext _repairApplicationDbContext;
-    public OwnerService(RepairApplicationDbContext repairApplicationDbContext){
-        _repairApplicationDbContext = repairApplicationDbContext;
-    }
+    public OwnerService(RepairApplicationDbContext repairApplicationDbContext) => _repairApplicationDbContext = repairApplicationDbContext;
 
     public void RegisterOwner(Owner owner){
         if (owner is null){
@@ -37,8 +35,6 @@ public class OwnerService{
             return;
         }
 
-
-        //Register owner to the db.
         _repairApplicationDbContext.Owners.Add(owner);
         _repairApplicationDbContext.SaveChanges();
         Console.WriteLine("Owned Registered");
@@ -56,7 +52,6 @@ public class OwnerService{
             return;
         }
 
-        //Display owner info (except password)
         Console.WriteLine($" Name: {ownerQueryResult.Name} \n" +
                           $" Surname: {ownerQueryResult.Surname} \n" +
                           $" Email:{ownerQueryResult.Email} \n" +
@@ -67,7 +62,6 @@ public class OwnerService{
         //Display owner Properties (if any) //TODO
         //Display owner Properties repairs //TODO 
     }
-
 
     public void UpdateOwnerInfo(Owner owner){
         if (owner is null){
@@ -89,7 +83,6 @@ public class OwnerService{
             Console.WriteLine($"Detected Change(Email). Changing Owner's Email is not allowed.");
         }
 
-        //Update owner's info to the db
         ownerQueryResult.Name = owner.Name;
         ownerQueryResult.Surname = owner.Surname;
         ownerQueryResult.Address = owner.Address;

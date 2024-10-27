@@ -1,8 +1,12 @@
 ﻿using TechnicoApplication.Models;
+using TechnicoApplication.Repositories;
 
 namespace TechnicoApplication.Services;
 
 public class RepairService{
+    private RepairApplicationDbContext _repairApplicationDbContext;
+    public RepairService(RepairApplicationDbContext repairApplicationDbContext) => _repairApplicationDbContext = repairApplicationDbContext;
+
     public void RegisterRepair(Repair repair){
         //Register a new repair
     }
