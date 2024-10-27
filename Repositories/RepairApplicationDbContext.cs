@@ -14,7 +14,6 @@ public class RepairApplicationDbContext : DbContext{
         optionsBuilder.UseSqlServer(connectionString);
     }
 
-    //Passing Parameters (extra) for properties(columns) of each of DbSet(tables to be) entities.
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 

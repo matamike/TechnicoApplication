@@ -12,17 +12,17 @@ RepairApplicationDbContext repairApplicationDbContext = new RepairApplicationDbC
 //Start Services 
 OwnerService ownerService = new OwnerService(repairApplicationDbContext);
 PropertyService propertyService = new PropertyService(repairApplicationDbContext);
+RepairService repairService = new RepairService(repairApplicationDbContext);
 
-Owner owner = new Owner()
-{
-    Name = "Donald",
-    Surname = "McDonald",
-    VatNumber = "HAHA349",
+Owner owner = new Owner(){
+    Name = "John",
+    Surname = "Wick",
+    VatNumber = "L1C3NC3D_K1LL3R",
     OType = OwnerType.Individual,
-    Address = "Clown 158",
-    Email = "Donald.McDonald@omg.com",
-    Password = "131313131",
-    PhoneNumber = "999555010",
+    Address = "Something 13",
+    Email = "John.Wick@aol.com",
+    Password = "1234567890",
+    PhoneNumber = "3016875",
 };
 
 //ownerService.RegisterOwner(owner);
@@ -59,6 +59,18 @@ Property property = new Property()
 //propertyService.DeleteProperty(property);
 
 //propertyService.UpdatePropertyInfo(property);
+
+Repair repair = new Repair()
+{
+    Description = "Plumbing broken. Requires indoor override.",
+    owner = owner,
+    property = property,
+    RType = RepairType.Plumbing,
+    Cost = 2000.0m,
+    ScheduledRepairDate = DateTime.Today.AddDays(10), //normally this should be set by the company assigned the repair request (after estimation)
+};
+
+repairService.RegisterRepair(repair);
 
 
 
