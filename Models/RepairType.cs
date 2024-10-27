@@ -4,5 +4,5 @@ public enum RepairType{
     Insulation,
     Frames,
     Plumbing,
-    ElectriicWork,
+    ElectricWork,
 }
