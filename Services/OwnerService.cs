@@ -52,15 +52,45 @@ public class OwnerService{
             return;
         }
 
-        Console.WriteLine($" Name: {ownerQueryResult.Name} \n" +
+       
+        Console.WriteLine($"====================== \n" +
+                          $" Name: {ownerQueryResult.Name} \n" +
                           $" Surname: {ownerQueryResult.Surname} \n" +
                           $" Email:{ownerQueryResult.Email} \n" +
                           $" Address: {ownerQueryResult.Address} \n" +
                           $" VAT: {ownerQueryResult.VatNumber} \n" +
-                          $" PhoneNumber: {ownerQueryResult.PhoneNumber} \n");
+                          $" PhoneNumber: {ownerQueryResult.PhoneNumber} \n"+
+                          $"====================== \n");
 
-        //Display owner Properties (if any) //TODO
-        //Display owner Properties repairs //TODO 
+
+
+        //Display owner Properties
+        Console.WriteLine("===========PROPERTIES===========");
+        _repairApplicationDbContext.Properties.Select(p => p)
+                                              .Where(p => p.owner == ownerQueryResult)
+                                              .ToList()
+                                              .ForEach(res => 
+                                              Console.WriteLine($"====================== \n" +
+                                              $" Property ID: {res.PropertyID} \n" +
+                                              $" Property Address: {res.PropertyAddress} \n" +
+                                              $" Property ConstructionYear: {res.PropertyConstructionYear} \n" +
+                                              $" Property Type: {res.PType} \n" +
+                                              $"====================== \n"));
+        Console.WriteLine("================================");
+        //Display owner Properties repairs
+        Console.WriteLine("===========REPAIRS===========");
+        _repairApplicationDbContext.Repairs.Select(r => r)
+                                      .Where(r => r.owner == ownerQueryResult)
+                                      .ToList()
+                                      .ForEach(res =>
+                                      Console.WriteLine($"====================== \n" +
+                                      $" Repair Date: {res.ScheduledRepairDate.ToString()} \n" +
+                                      $" Repair Cost: {res.Cost} \n" +
+                                      $" Repair Description: {res.Description} \n" +
+                                      $" Repair Type: {res.RType} \n" +
+                                      $" Repair Status: {res.Status} \n" +
+                                      $"====================== \n"));
+        Console.WriteLine("=============================");
     }
 
     public void UpdateOwnerInfo(Owner owner){

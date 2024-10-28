@@ -73,7 +73,7 @@ Repair repair = new Repair()
 //repairService.RegisterRepair(repair);
 //repairService.DeleteRepair(repair);
 //repairService.UpdateRepairInfo(repair);
-repairService.SearchRepair(repair);
+//repairService.SearchRepair(repair);
 
 
 
