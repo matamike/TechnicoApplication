@@ -70,8 +70,10 @@ Repair repair = new Repair()
     ScheduledRepairDate = DateTime.Today.AddDays(10), //normally this should be set by the company assigned the repair request (after estimation)
 };
 
-repairService.RegisterRepair(repair);
-
+//repairService.RegisterRepair(repair);
+//repairService.DeleteRepair(repair);
+//repairService.UpdateRepairInfo(repair);
+repairService.SearchRepair(repair);
 
 
 

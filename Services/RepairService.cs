@@ -8,7 +8,6 @@ public class RepairService{
     public RepairService(RepairApplicationDbContext repairApplicationDbContext) => _repairApplicationDbContext = repairApplicationDbContext;
 
     public void RegisterRepair(Repair repair){
-        //Register a new repair
         if (repair == null){
             Console.WriteLine("property argument was null.");
             return;
@@ -41,8 +40,6 @@ public class RepairService{
 
         repair.owner = queryOwner;
         repair.property = queryProperty;
-
-        //Register Repair
         _repairApplicationDbContext.Repairs.Add(repair);
         _repairApplicationDbContext.SaveChanges();
         Console.WriteLine("Repair Registered");
@@ -50,14 +47,121 @@ public class RepairService{
 
     public void SearchRepair(Repair repair){
         //Find a repair corresponding to a property given that it exists
+        if (repair == null){
+            Console.WriteLine("repair argument was null.");
+            return;
+        }
+
+        if (repair.owner == null)
+        {
+            Console.WriteLine("Repair's Owner was not set");
+            return;
+        }
+
+        if (repair.property == null)
+        {
+            Console.WriteLine("Repair's Property was not set");
+            return;
+        }
+
+        Owner? ownerQueeryResult = _repairApplicationDbContext.Owners.FirstOrDefault(o => o.VatNumber == repair.owner.VatNumber);
+        Property? propertyQueryResult = _repairApplicationDbContext.Properties.FirstOrDefault(p => p.PropertyID == repair.property.PropertyID);
+        if (ownerQueeryResult == null || propertyQueryResult == null){
+            Console.WriteLine("Repair requested update contains property or owner not registered.");
+            return;
+        }
+
+        Repair? repairOwnerQueryResult = _repairApplicationDbContext.Repairs.FirstOrDefault(r => r.owner == ownerQueeryResult && r.property == propertyQueryResult);
+        if (repairOwnerQueryResult == null){
+            Console.WriteLine("Repair not found in database.");
+            return;
+        }
+
+        Console.WriteLine($"==============Repair=========== \n" +
+                          $" Repair Type: {repairOwnerQueryResult.RType} \n" +
+                          $" Repair Cost: {repairOwnerQueryResult.Cost} \n" +
+                          $" Repair Status: {repairOwnerQueryResult.Status} \n" +
+                          $" Repair Description: {repairOwnerQueryResult.Description} \n" +
+                          $" Repair Date: {repairOwnerQueryResult.ScheduledRepairDate} \n" +
+                          $"===============================");
     }
 
 
     public void UpdateRepairInfo(Repair repair){
-        //update selected repair's info (with validation ofc)
+        if (repair == null)
+        {
+            Console.WriteLine("repair argument was null.");
+            return;
+        }
+
+        if (repair.owner == null)
+        {
+            Console.WriteLine("Repair's Owner was not set");
+            return;
+        }
+
+        if (repair.property == null)
+        {
+            Console.WriteLine("Repair's Property was not set");
+            return;
+        }
+
+        Owner? ownerQueeryResult = _repairApplicationDbContext.Owners.FirstOrDefault(o => o.VatNumber == repair.owner.VatNumber);
+        Property? propertyQueryResult = _repairApplicationDbContext.Properties.FirstOrDefault(p => p.PropertyID == repair.property.PropertyID);
+        if (ownerQueeryResult == null || propertyQueryResult == null)
+        {
+            Console.WriteLine("Repair requested update contains property or owner not registered.");
+            return;
+        }
+
+        Repair? repairOwnerQueryResult = _repairApplicationDbContext.Repairs.FirstOrDefault(r => r.owner == ownerQueeryResult && r.property == propertyQueryResult);
+        if (repairOwnerQueryResult == null)
+        {
+            Console.WriteLine("Repair not found in database.");
+            return;
+        }
+
+        repairOwnerQueryResult.ScheduledRepairDate = repair.ScheduledRepairDate;
+        repairOwnerQueryResult.Cost = repair.Cost;
+        repairOwnerQueryResult.RType = repair.RType;
+        repairOwnerQueryResult.Description = repair.Description;
+        repairOwnerQueryResult.Status = repair.Status;
+        _repairApplicationDbContext.SaveChanges();
+        Console.WriteLine("Changes Updated Successfully.");
     }
 
     public void DeleteRepair(Repair repair){
-        //Remove a repair that corresponds to the logged in user's 
+        if (repair == null){
+            Console.WriteLine("repair argument was null.");
+            return;
+        }
+
+        if (repair.owner == null){
+            Console.WriteLine("Repair's Owner was not set");
+            return;
+        }
+
+        if (repair.property == null){
+            Console.WriteLine("Repair's Property was not set");
+            return;
+        }
+
+        Owner? ownerQueeryResult = _repairApplicationDbContext.Owners.FirstOrDefault(o => o.VatNumber == repair.owner.VatNumber);
+        Property? propertyQueryResult = _repairApplicationDbContext.Properties.FirstOrDefault(p => p.PropertyID == repair.property.PropertyID);
+        if (ownerQueeryResult == null || propertyQueryResult == null){
+            Console.WriteLine("Repair requested removal contains property or owner not registered.");
+            return;
+        }
+
+        Repair? repairOwnerQueryResult = _repairApplicationDbContext.Repairs.FirstOrDefault(r => r.owner == ownerQueeryResult && r.property == propertyQueryResult);
+        if (repairOwnerQueryResult == null){
+            Console.WriteLine("Repair not found in database.");
+            return;
+        }
+
+
+        _repairApplicationDbContext.Repairs.Remove(repairOwnerQueryResult);
+        _repairApplicationDbContext.SaveChanges();
+        Console.WriteLine("Repair Removed");
     }
 }
