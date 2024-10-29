@@ -1,113 +1,67 @@
 ﻿using TechnicoApplication.Models;
 using TechnicoApplication.Repositories;
+using TechnicoApplication.Responses;
 
 namespace TechnicoApplication.Services;
 public class PropertyService{
     private RepairApplicationDbContext _repairApplicationDbContext;
     public PropertyService(RepairApplicationDbContext repairApplicationDbContext) => _repairApplicationDbContext = repairApplicationDbContext;
 
-    public void RegisterProperty(Property property){
-        if(property == null){
-            Console.WriteLine("property argument was null.");
-            return;
-        }
+    public ImmutableResponseStatus RegisterProperty(Property property){
+        if (property == null) return new ImmutableResponseStatus(false, "property argument was null.");
 
-        if (property.PropertyID == null || property.PropertyID == string.Empty)
-        {
-            Console.WriteLine("PropertyID not set");
-            return;
-        }
+        if (property.PropertyID == null || property.PropertyID == string.Empty) return new ImmutableResponseStatus(false, "PropertyID not set");
 
-        if (property.owner == null){
-            Console.WriteLine("Property Owner not set");
-            return;
-        }
+        if (property.owner == null) return new ImmutableResponseStatus(false, "Property Owner not set");
         
         Property? queryProperty = _repairApplicationDbContext.Properties.FirstOrDefault(p => p.PropertyID == property.PropertyID);
-        if (queryProperty != null){
-            Console.WriteLine($"Property with PropertyID: {queryProperty.PropertyID} already exists.");
-            return;
-        }
+        if (queryProperty != null) return new ImmutableResponseStatus(false, $"Property with PropertyID: {queryProperty.PropertyID} already exists.");
 
         Owner? queryOwner = _repairApplicationDbContext.Owners.FirstOrDefault(p => p.VatNumber == property.owner.VatNumber);
-        if (queryOwner == null){
-            Console.WriteLine("Property's Owner is not registered.");
-            return;
-        }
+        if (queryOwner == null) return new ImmutableResponseStatus(false, "Property's Owner is not registered.");
 
-
-        //Register Property
         property.owner = queryOwner;
         _repairApplicationDbContext.Properties.Add(property);
         _repairApplicationDbContext.SaveChanges();
-        Console.WriteLine("Property Registered");
+        return new ImmutableResponseStatus(true, "Property Registered", property);
     }
 
-    public void DisplayPropertyInfo(Property property){
-        if (property == null){
-            Console.WriteLine("property argument was null.");
-            return;
-        }
+    public ImmutableResponseStatus DisplayPropertyInfo(Property property){
+        if (property == null) return new ImmutableResponseStatus(false, "property argument was null.");
 
         Property? propertyQuery = _repairApplicationDbContext.Properties.FirstOrDefault(p => p.PropertyID == property.PropertyID);
-        if (propertyQuery == null){
-            Console.WriteLine("Property requested to be displayed cannot be found.");
-            return;
-        }
-
-        Console.WriteLine("===================================");
-        Console.WriteLine($" PropertyID: {propertyQuery.PropertyID} \n" +
-                  $" Address: {propertyQuery.PropertyAddress} \n" +
-                  $" Construction Year:{propertyQuery.PropertyConstructionYear} \n" +
-                  $" Property Type: {propertyQuery.PType.ToString()} \n");
-        Console.WriteLine("===================================");
+        if (propertyQuery == null) return new ImmutableResponseStatus(false, "Property requested to be displayed cannot be found.");
+        propertyQuery.PrintSelf();
+        return new ImmutableResponseStatus(true, "Property Data successfully displayed");
     }
 
-    public void UpdatePropertyInfo(Property property){
-        if (property is null){
-            Console.WriteLine("property argument is null.");
-            return;
-        }
+    public ImmutableResponseStatus UpdatePropertyInfo(Property property){
+        if (property == null) return new ImmutableResponseStatus(false, "property argument was null.");
 
-        Property? propertyQueryResult = _repairApplicationDbContext.Properties.FirstOrDefault(p => p.PropertyID == property.PropertyID);
-        if (propertyQueryResult == null){
-            Console.WriteLine($"Property requested update changes does not exist");
-            return;
-        }
+        if (property.owner == null) return new ImmutableResponseStatus(false, "Property argument has input owner null.");
 
-        if(property.owner == null){
-            Console.WriteLine("Property argument has owner null.");
-            return;
-        }
+        Property? propertyQuery = _repairApplicationDbContext.Properties.FirstOrDefault(p => p.PropertyID == property.PropertyID);
+        if (propertyQuery == null) return new ImmutableResponseStatus(false, "Property requested update changes does not exist");
 
         Owner? targetQueryOwner = _repairApplicationDbContext.Owners.FirstOrDefault(p => p.VatNumber == property.owner.VatNumber);
-        if (targetQueryOwner == null){
-            Console.WriteLine("Owner requested change does not exist in database. ");
-            return;
-        }
+        if (targetQueryOwner == null) return new ImmutableResponseStatus(false, "Owner requested change not registered.");
 
-        propertyQueryResult.PropertyAddress = property.PropertyAddress;
-        propertyQueryResult.PropertyConstructionYear = property.PropertyConstructionYear;
-        propertyQueryResult.owner = targetQueryOwner;
+        propertyQuery.PropertyAddress = property.PropertyAddress;
+        propertyQuery.PropertyConstructionYear = property.PropertyConstructionYear;
+        propertyQuery.owner = targetQueryOwner;
         _repairApplicationDbContext.SaveChanges();
-        Console.WriteLine("Changes Updated Successfully.");
+        return new ImmutableResponseStatus(true, "Changes Updated Successfully.", propertyQuery);
     }
 
-    public void DeleteProperty(Property property){
-        if (property == null){
-            Console.WriteLine("property argument was null.");
-            return;
-        }
+    public ImmutableResponseStatus DeleteProperty(Property property){
+        if (property == null) return new ImmutableResponseStatus(false, "property argument was null.");
 
-        Property? propertyQueryResult = _repairApplicationDbContext.Properties.FirstOrDefault(p => p.PropertyID == property.PropertyID);
-        if (propertyQueryResult == null){
-            Console.WriteLine("Property requested removal does not exist.");
-            return;
-        }
+        Property? propertyQuery = _repairApplicationDbContext.Properties.FirstOrDefault(p => p.PropertyID == property.PropertyID);
+        if (propertyQuery == null) return new ImmutableResponseStatus(false, "Property requested removal does not exist.");
 
-        _repairApplicationDbContext.Properties.Remove(propertyQueryResult);
+        _repairApplicationDbContext.Properties.Remove(propertyQuery);
         _repairApplicationDbContext.SaveChanges();
-        Console.WriteLine("Property Removed");
+        return new ImmutableResponseStatus(true, "Property Removed");
     }
 }
 

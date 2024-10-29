@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using TechnicoApplication.Models;
 using TechnicoApplication.Repositories;
+using TechnicoApplication.Responses;
 using TechnicoApplication.Services;
 
 Console.WriteLine("Welcome To Technico!");
@@ -16,16 +17,18 @@ RepairService repairService = new RepairService(repairApplicationDbContext);
 
 Owner owner = new Owner(){
     Name = "John",
-    Surname = "Wick",
-    VatNumber = "L1C3NC3D_K1LL3R",
+    Surname = "Winston",
+    VatNumber = "T3X4S_W4RR10R",
     OType = OwnerType.Individual,
-    Address = "Something 13",
-    Email = "John.Wick@aol.com",
-    Password = "1234567890",
-    PhoneNumber = "3016875",
+    Address = "Howdy 13",
+    Email = "John.Winston@aol.com",
+    Password = "2312312312",
+    PhoneNumber = "2828347237",
 };
 
-//ownerService.RegisterOwner(owner);
+ImmutableResponseStatus response =  ownerService.RegisterOwner(owner);
+response.PrintResponseStatus();
+response.PrintResponseMessage();
 
 //owner.Name = "Agent";
 //owner.Surname = "47";

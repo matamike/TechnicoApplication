@@ -1,5 +1,6 @@
 ﻿using TechnicoApplication.Models;
 using TechnicoApplication.Repositories;
+using TechnicoApplication.Responses;
 
 namespace TechnicoApplication.Services;
 
@@ -7,135 +8,77 @@ public class OwnerService{
     private RepairApplicationDbContext _repairApplicationDbContext;
     public OwnerService(RepairApplicationDbContext repairApplicationDbContext) => _repairApplicationDbContext = repairApplicationDbContext;
 
-    public void RegisterOwner(Owner owner){
-        if (owner is null){
-            Console.WriteLine("owner argument is null.");
-            return;
-        }
+    public ImmutableResponseStatus RegisterOwner(Owner owner){
+        if (owner is null) return new ImmutableResponseStatus(false, "owner argument is null.");
 
         Owner? ownerVatQueryResult = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.VatNumber == owner.VatNumber);
         Owner? ownerEmailQueryResultt = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.Email == owner.Email);
-        if (ownerVatQueryResult != null){
-            Console.WriteLine($"Owner registration with the VatNumber provided already exists.");
-            return;
-        }
+        if (ownerVatQueryResult != null) return new ImmutableResponseStatus(false, "Owner registration with the VatNumber provided already exists.");
 
-        if (ownerEmailQueryResultt != null){
-            Console.WriteLine($"Owner registration with the Email provided already exists.");
-            return;
-        }
+        if (ownerEmailQueryResultt != null) return new ImmutableResponseStatus(false, "Owner registration with the Email provided already exists.");
 
-        if (owner.Email == null || owner.Email == string.Empty){
-            Console.WriteLine($"Owner input email is null or empty");
-            return;
-        }
+        if (owner.Email == null || owner.Email == string.Empty) return new ImmutableResponseStatus(false, "Owner input email is null or empty");
 
-        if (owner.VatNumber == null || owner.VatNumber == string.Empty){
-            Console.WriteLine($"Owner input VatNumber is null or empty");
-            return;
-        }
+        if (owner.VatNumber == null || owner.VatNumber == string.Empty) return new ImmutableResponseStatus(false, "Owner input VatNumber is null or empty");
 
         _repairApplicationDbContext.Owners.Add(owner);
         _repairApplicationDbContext.SaveChanges();
-        Console.WriteLine("Owned Registered");
+
+        return new ImmutableResponseStatus(true, "Owned Registered", owner);
     }
 
-    public void DisplayOwnerInfo(Owner owner){
-        if (owner is null){
-            Console.WriteLine("owner argument is null.");
-            return;
-        }
+    public ImmutableResponseStatus DisplayOwnerInfo(Owner owner){
+        if (owner is null) return new ImmutableResponseStatus(false, "owner argument is null.");
 
         Owner? ownerQueryResult = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.VatNumber == owner.VatNumber);
-        if (ownerQueryResult == null){
-            Console.WriteLine($"Owner requested display does not exist");
-            return;
-        }
+        if (ownerQueryResult == null) return new ImmutableResponseStatus(false, "owner argument is null.");
 
-       
-        Console.WriteLine($"====================== \n" +
-                          $" Name: {ownerQueryResult.Name} \n" +
-                          $" Surname: {ownerQueryResult.Surname} \n" +
-                          $" Email:{ownerQueryResult.Email} \n" +
-                          $" Address: {ownerQueryResult.Address} \n" +
-                          $" VAT: {ownerQueryResult.VatNumber} \n" +
-                          $" PhoneNumber: {ownerQueryResult.PhoneNumber} \n"+
-                          $"====================== \n");
+        ownerQueryResult.PrintSelf();
 
-
-
-        //Display owner Properties
         Console.WriteLine("===========PROPERTIES===========");
         _repairApplicationDbContext.Properties.Select(p => p)
                                               .Where(p => p.owner == ownerQueryResult)
                                               .ToList()
-                                              .ForEach(res => 
-                                              Console.WriteLine($"====================== \n" +
-                                              $" Property ID: {res.PropertyID} \n" +
-                                              $" Property Address: {res.PropertyAddress} \n" +
-                                              $" Property ConstructionYear: {res.PropertyConstructionYear} \n" +
-                                              $" Property Type: {res.PType} \n" +
-                                              $"====================== \n"));
+                                              .ForEach(res => res.PrintSelf());
         Console.WriteLine("================================");
-        //Display owner Properties repairs
+
         Console.WriteLine("===========REPAIRS===========");
         _repairApplicationDbContext.Repairs.Select(r => r)
                                       .Where(r => r.owner == ownerQueryResult)
                                       .ToList()
-                                      .ForEach(res =>
-                                      Console.WriteLine($"====================== \n" +
-                                      $" Repair Date: {res.ScheduledRepairDate.ToString()} \n" +
-                                      $" Repair Cost: {res.Cost} \n" +
-                                      $" Repair Description: {res.Description} \n" +
-                                      $" Repair Type: {res.RType} \n" +
-                                      $" Repair Status: {res.Status} \n" +
-                                      $"====================== \n"));
+                                      .ForEach(res => res.PrintSelf());
         Console.WriteLine("=============================");
+
+        return new ImmutableResponseStatus(true, "Owned Data successfully displayed");
     }
 
-    public void UpdateOwnerInfo(Owner owner){
-        if (owner is null){
-            Console.WriteLine("owner argument is null.");
-            return;
-        }
+    public ImmutableResponseStatus UpdateOwnerInfo(Owner owner){
+        if (owner is null) return new ImmutableResponseStatus(false, "owner argument is null.");
 
         Owner? ownerQueryResult = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.VatNumber == owner.VatNumber);
-        if (ownerQueryResult == null){
-            Console.WriteLine($"Owner requested update changes does not exist");
-            return;
-        }
+        if (ownerQueryResult == null) return new ImmutableResponseStatus(false, "Owner requested update changes does not exist");
 
-        if (ownerQueryResult.VatNumber != owner.VatNumber){
-            Console.WriteLine($"Detected Change(VAT). Changing Owner's VAT is not allowed.");
-        }
+        if (ownerQueryResult.VatNumber != owner.VatNumber) return new ImmutableResponseStatus(false, "Detected Change(VAT). Changing Owner's VAT is not allowed.");
 
-        if (ownerQueryResult.Email != owner.Email){
-            Console.WriteLine($"Detected Change(Email). Changing Owner's Email is not allowed.");
-        }
+        if (ownerQueryResult.Email != owner.Email) return new ImmutableResponseStatus(false, "Detected Change(Email). Changing Owner's Email is not allowed.");
 
         ownerQueryResult.Name = owner.Name;
         ownerQueryResult.Surname = owner.Surname;
         ownerQueryResult.Address = owner.Address;
         ownerQueryResult.PhoneNumber = owner.PhoneNumber;
         _repairApplicationDbContext.SaveChanges();
-        Console.WriteLine("Changes Updated Successfully.");
+        return new ImmutableResponseStatus(true, "Changes Updated Successfully.", ownerQueryResult);
     }
 
-    public void DeleteOwner(Owner owner){
-        if(owner is null){
-            Console.WriteLine("owner argument is null.");
-            return;
-        }
+    public ImmutableResponseStatus DeleteOwner(Owner owner){
+        if (owner is null) return new ImmutableResponseStatus(false, "owner argument is null.");
 
         Owner? ownerQueryResult = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.VatNumber == owner.VatNumber);
-        if (ownerQueryResult == null){
-            Console.WriteLine($"Owner requested removal does not exist");
-            return;
-        }
+        if (ownerQueryResult == null) return new ImmutableResponseStatus(false, "Owner requested removal does not exist");
 
         //Delete owner from the db.
         _repairApplicationDbContext.Owners.Remove(ownerQueryResult);
         _repairApplicationDbContext.SaveChanges();
-        Console.WriteLine("Owner Removed");
+        return new ImmutableResponseStatus(true, "Owner Removed", owner);
     }
 }
