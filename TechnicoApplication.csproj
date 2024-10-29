@@ -6,7 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+  
+  <!--Remove the Migration segment below if you wish to hide it from project hierarchy-->
   <ItemGroup>
     <!--<Compile Remove="Migrations\**" />
     <EmbeddedResource Remove="Migrations\**" />
