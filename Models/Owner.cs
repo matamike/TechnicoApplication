@@ -2,7 +2,7 @@
 
 namespace TechnicoApplication.Models;
 
-public class Owner : IPrintable{
+public class Owner{
     [Key] public int Id { get; private set; }
     public string Name { get; set; } = string.Empty;
     public string Surname { get; set; } = string.Empty;
@@ -13,15 +13,15 @@ public class Owner : IPrintable{
     public string PhoneNumber { get; set; } = string.Empty;
     public OwnerType OType { get; set; }
 
-    public void PrintSelf(){
-        Console.WriteLine($"====================== \n" +
+    public override string ToString(){
+        return $"====================== \n" +
                   $" Name: {Name} \n" +
                   $" Surname: {Surname} \n" +
                   $" Email:{Email} \n" +
                   $" Address: {Address} \n" +
                   $" VAT: {VatNumber} \n" +
                   $" PhoneNumber: {PhoneNumber} \n" +
-                  $"====================== \n");
+                  $"====================== \n";
     }
 
 }
