@@ -4,11 +4,11 @@ using TechnicoApplication.Responses;
 
 namespace TechnicoApplication.Services;
 
-public class RepairService{
+public class RepairService: ICRUDService<Repair>{
     private RepairApplicationDbContext _repairApplicationDbContext;
     public RepairService(RepairApplicationDbContext repairApplicationDbContext) => _repairApplicationDbContext = repairApplicationDbContext;
 
-    public ImmutableResponseStatus RegisterRepair(Repair repair){
+    public ImmutableResponseStatus Create(Repair repair){
         if (repair == null) return new ImmutableResponseStatus(false, "repair argument was null.");
         if (repair.owner == null) return new ImmutableResponseStatus(false, "Owner for whom Property requested repair not set");
         if (repair.property == null) return new ImmutableResponseStatus(false, "Property field requesting repair not set");
@@ -26,7 +26,7 @@ public class RepairService{
         return new ImmutableResponseStatus(true, "Repair Registered");
     }
 
-    public ImmutableResponseStatus SearchRepair(Repair repair){
+    public ImmutableResponseStatus Display(Repair repair){
         if (repair == null) return new ImmutableResponseStatus(false, "repair argument was null.");
         if (repair.owner == null) return new ImmutableResponseStatus(false, "Owner for whom Property requested repair not set");
         if (repair.property == null) return new ImmutableResponseStatus(false, "Property field requesting repair not set");
@@ -40,13 +40,12 @@ public class RepairService{
         Repair? repairOwnerQueryResult = _repairApplicationDbContext.Repairs.FirstOrDefault(r => r.owner == queryProperty && r.property == queryOwner);
         if (repairOwnerQueryResult == null) return new ImmutableResponseStatus(false, "Repair not found in database.");
 
-        repairOwnerQueryResult.PrintSelf();
+        Console.WriteLine(repairOwnerQueryResult.ToString());
 
         return new ImmutableResponseStatus(true, "Repair successfully displayed.");
     }
 
-
-    public ImmutableResponseStatus UpdateRepairInfo(Repair repair){
+    public ImmutableResponseStatus Update(Repair repair){
         if (repair == null) return new ImmutableResponseStatus(false, "repair argument was null.");
         if (repair.owner == null) return new ImmutableResponseStatus(false, "Owner for whom Property requested repair not set");
         if (repair.property == null) return new ImmutableResponseStatus(false, "Property field requesting repair not set");
@@ -68,7 +67,7 @@ public class RepairService{
         return new ImmutableResponseStatus(true, "Changes Updated Successfully.");
     }
 
-    public ImmutableResponseStatus DeleteRepair(Repair repair){
+    public ImmutableResponseStatus Delete(Repair repair){
         if (repair == null) return new ImmutableResponseStatus(false, "repair argument was null.");
         if (repair.owner == null) return new ImmutableResponseStatus(false, "Owner for whom Property requested repair not set");
         if (repair.property == null) return new ImmutableResponseStatus(false, "Property field requesting repair not set");

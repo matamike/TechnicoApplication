@@ -3,11 +3,11 @@ using TechnicoApplication.Repositories;
 using TechnicoApplication.Responses;
 
 namespace TechnicoApplication.Services;
-public class PropertyService{
+public class PropertyService : ICRUDService<Property>{
     private RepairApplicationDbContext _repairApplicationDbContext;
     public PropertyService(RepairApplicationDbContext repairApplicationDbContext) => _repairApplicationDbContext = repairApplicationDbContext;
 
-    public ImmutableResponseStatus RegisterProperty(Property property){
+    public ImmutableResponseStatus Create(Property property){
         if (property == null) return new ImmutableResponseStatus(false, "property argument was null.");
 
         if (property.PropertyID == null || property.PropertyID == string.Empty) return new ImmutableResponseStatus(false, "PropertyID not set");
@@ -26,16 +26,16 @@ public class PropertyService{
         return new ImmutableResponseStatus(true, "Property Registered", property);
     }
 
-    public ImmutableResponseStatus DisplayPropertyInfo(Property property){
+    public ImmutableResponseStatus Display(Property property){
         if (property == null) return new ImmutableResponseStatus(false, "property argument was null.");
 
         Property? propertyQuery = _repairApplicationDbContext.Properties.FirstOrDefault(p => p.PropertyID == property.PropertyID);
         if (propertyQuery == null) return new ImmutableResponseStatus(false, "Property requested to be displayed cannot be found.");
-        propertyQuery.PrintSelf();
+        Console.WriteLine(propertyQuery.ToString());
         return new ImmutableResponseStatus(true, "Property Data successfully displayed");
     }
 
-    public ImmutableResponseStatus UpdatePropertyInfo(Property property){
+    public ImmutableResponseStatus Update(Property property){
         if (property == null) return new ImmutableResponseStatus(false, "property argument was null.");
 
         if (property.owner == null) return new ImmutableResponseStatus(false, "Property argument has input owner null.");
@@ -53,7 +53,7 @@ public class PropertyService{
         return new ImmutableResponseStatus(true, "Changes Updated Successfully.", propertyQuery);
     }
 
-    public ImmutableResponseStatus DeleteProperty(Property property){
+    public ImmutableResponseStatus Delete(Property property){
         if (property == null) return new ImmutableResponseStatus(false, "property argument was null.");
 
         Property? propertyQuery = _repairApplicationDbContext.Properties.FirstOrDefault(p => p.PropertyID == property.PropertyID);

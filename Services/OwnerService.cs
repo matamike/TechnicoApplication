@@ -4,11 +4,11 @@ using TechnicoApplication.Responses;
 
 namespace TechnicoApplication.Services;
 
-public class OwnerService{
+public class OwnerService : ICRUDService<Owner>{
     private RepairApplicationDbContext _repairApplicationDbContext;
     public OwnerService(RepairApplicationDbContext repairApplicationDbContext) => _repairApplicationDbContext = repairApplicationDbContext;
 
-    public ImmutableResponseStatus RegisterOwner(Owner owner){
+    public ImmutableResponseStatus Create(Owner owner){
         if (owner is null) return new ImmutableResponseStatus(false, "owner argument is null.");
 
         Owner? ownerVatQueryResult = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.VatNumber == owner.VatNumber);
@@ -27,32 +27,32 @@ public class OwnerService{
         return new ImmutableResponseStatus(true, "Owned Registered", owner);
     }
 
-    public ImmutableResponseStatus DisplayOwnerInfo(Owner owner){
+    public ImmutableResponseStatus Display(Owner owner){
         if (owner is null) return new ImmutableResponseStatus(false, "owner argument is null.");
 
         Owner? ownerQueryResult = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.VatNumber == owner.VatNumber);
         if (ownerQueryResult == null) return new ImmutableResponseStatus(false, "owner argument is null.");
 
-        ownerQueryResult.PrintSelf();
+        Console.WriteLine(ownerQueryResult.ToString());
 
         Console.WriteLine("===========PROPERTIES===========");
         _repairApplicationDbContext.Properties.Select(p => p)
                                               .Where(p => p.owner == ownerQueryResult)
                                               .ToList()
-                                              .ForEach(res => res.PrintSelf());
+                                              .ForEach(res => res.ToString());
         Console.WriteLine("================================");
 
         Console.WriteLine("===========REPAIRS===========");
         _repairApplicationDbContext.Repairs.Select(r => r)
                                       .Where(r => r.owner == ownerQueryResult)
                                       .ToList()
-                                      .ForEach(res => res.PrintSelf());
+                                      .ForEach(res => res.ToString());
         Console.WriteLine("=============================");
 
         return new ImmutableResponseStatus(true, "Owned Data successfully displayed");
     }
 
-    public ImmutableResponseStatus UpdateOwnerInfo(Owner owner){
+    public ImmutableResponseStatus Update(Owner owner){
         if (owner is null) return new ImmutableResponseStatus(false, "owner argument is null.");
 
         Owner? ownerQueryResult = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.VatNumber == owner.VatNumber);
@@ -70,7 +70,7 @@ public class OwnerService{
         return new ImmutableResponseStatus(true, "Changes Updated Successfully.", ownerQueryResult);
     }
 
-    public ImmutableResponseStatus DeleteOwner(Owner owner){
+    public ImmutableResponseStatus Delete(Owner owner){
         if (owner is null) return new ImmutableResponseStatus(false, "owner argument is null.");
 
         Owner? ownerQueryResult = _repairApplicationDbContext.Owners.FirstOrDefault(c => c.VatNumber == owner.VatNumber);

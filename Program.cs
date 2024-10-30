@@ -26,17 +26,16 @@ Owner owner = new Owner(){
     PhoneNumber = "2828347237",
 };
 
-ImmutableResponseStatus response =  ownerService.RegisterOwner(owner);
-response.PrintResponseStatus();
-response.PrintResponseMessage();
+ImmutableResponseStatus response =  ownerService.Create(owner);
+Console.WriteLine(response.ToString());
 
 //owner.Name = "Agent";
 //owner.Surname = "47";
 //owner.Email = "Agent.47@aol.com";
 //ownerService.UpdateOwnerInfo(owner);
 
-//ownerService.DisplayOwnerInfo(owner);
-//ownerService.DeleteOwner(owner);
+//ownerService.Display(owner);
+//ownerService.Delete(owner);
 
 
 //Property Test
@@ -48,20 +47,22 @@ response.PrintResponseMessage();
 //    PropertyID = "SHWWRA78",
 //    PType = PropertyType.Maisonet,
 //};
+
 Property property = new Property()
 {
     owner = owner,
-    PropertyAddress = "Harold 10",
-    PropertyConstructionYear = 2020,
-    PropertyID = "SHWWRA78",
-    PType = PropertyType.DetachedHouse,
+    PropertyAddress = "Treisson 27",
+    PropertyConstructionYear = 2004,
+    PropertyID = "FSDFFASDF22",
+    PType = PropertyType.Maisonet,
 };
 
-//propertyService.RegisterProperty(property);
-//propertyService.DisplayPropertyInfo(property);
-//propertyService.DeleteProperty(property);
+ImmutableResponseStatus propertyResponse = propertyService.Create(property);
+Console.WriteLine(propertyResponse.ToString());
 
-//propertyService.UpdatePropertyInfo(property);
+//propertyService.Display(property);
+//propertyService.Delete(property);
+//propertyService.Update(property);
 
 Repair repair = new Repair()
 {
@@ -73,10 +74,10 @@ Repair repair = new Repair()
     ScheduledRepairDate = DateTime.Today.AddDays(10), //normally this should be set by the company assigned the repair request (after estimation)
 };
 
-//repairService.RegisterRepair(repair);
-//repairService.DeleteRepair(repair);
-//repairService.UpdateRepairInfo(repair);
-//repairService.SearchRepair(repair);
+//repairService.Create(repair);
+//repairService.Delete(repair);
+//repairService.Update(repair);
+//repairService.Display(repair);
 
 
 
