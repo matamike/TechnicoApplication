@@ -19,4 +19,6 @@ public class Property : IPrintable {
                           $"====================== \n"); 
     }
 }
-//kati 
+//kati kati allo !!!
+
+///nai yes!!! 
