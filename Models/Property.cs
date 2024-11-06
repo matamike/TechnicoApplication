@@ -19,3 +19,4 @@ public class Property : IPrintable {
                           $"====================== \n"); 
     }
 }
+//kati 
